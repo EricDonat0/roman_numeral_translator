@@ -31,131 +31,132 @@ class ADFRomano
   end
 
   def iniciar
-    estado = "q0"
-
-    if @cadeia.empty?
-      puts "Erro ❌"
-      puts "Cadeia vazia não é um número romano válido"
-      return
-    end
+    estado = "qInicio"
 
     puts "Máquina iniciou no estado: #{estado}"
     puts "Entrada: #{@cadeia}"
 
     loop do
       case [proximo, estado]
-      
-      # ESTADO INICIAL / CASA DOS MILHARES
-      in ["M", "q0"]
+
+      # -------- INICIO --------
+
+      in ["M", "qInicio"]
         emitir(1000)
-        estado = "qM1"
+        estado = "qMilhar_1M"
 
-      in ["C", "q0"]
-        estado = "qH_C1"
+      in ["C", "qInicio"]
+        estado = "qCentena_1C"
 
-      in ["D", "q0"]
+      in ["D", "qInicio"]
         emitir(500)
-        estado = "qH_D"
+        estado = "qCentena_D"
 
-      in ["X", "q0"]
-        estado = "qT_X1"
+      in ["X", "qInicio"]
+        estado = "qDezena_1X"
 
-      in ["L", "q0"]
+      in ["L", "qInicio"]
         emitir(50)
-        estado = "qT_L"
+        estado = "qDezena_L"
 
-      in ["I", "q0"]
-        estado = "qU_I1"
+      in ["I", "qInicio"]
+        estado = "qUnidade_1I"
 
-      in ["V", "q0"]
+      in ["V", "qInicio"]
         emitir(5)
-        estado = "qU_V"
+        estado = "qUnidade_V"
 
-      in ["", "q0"]
+      in ["", "qInicio"]
         erro(estado)
         break
 
-      in ["M", "qM1"]
+      # -------- MILHARES --------
+
+      in ["M", "qMilhar_1M"]
         emitir(1000)
-        estado = "qM2"
+        estado = "qMilhar_2M"
 
-      in ["C", "qM1"]
-        estado = "qH_C1"
+      in ["C", "qMilhar_1M"]
+        estado = "qCentena_1C"
 
-      in ["D", "qM1"]
+      in ["D", "qMilhar_1M"]
         emitir(500)
-        estado = "qH_D"
+        estado = "qCentena_D"
 
-      in ["X", "qM1"]
-        estado = "qT_X1"
+      in ["X", "qMilhar_1M"]
+        estado = "qDezena_1X"
 
-      in ["L", "qM1"]
+      in ["L", "qMilhar_1M"]
         emitir(50)
-        estado = "qT_L"
+        estado = "qDezena_L"
 
-      in ["I", "qM1"]
-        estado = "qU_I1"
+      in ["I", "qMilhar_1M"]
+        estado = "qUnidade_1I"
 
-      in ["V", "qM1"]
+      in ["V", "qMilhar_1M"]
         emitir(5)
-        estado = "qU_V"
+        estado = "qUnidade_V"
 
-      in ["", "qM1"]
+      in ["", "qMilhar_1M"]
         aceitar
         break
 
-      in ["M", "qM2"]
+      in ["M", "qMilhar_2M"]
         emitir(1000)
-        estado = "qM3"
+        estado = "qMilhar_3M"
 
-      in ["C", "qM2"]
-        estado = "qH_C1"
+      in ["C", "qMilhar_2M"]
+        estado = "qCentena_1C"
 
-      in ["D", "qM2"]
+      in ["D", "qMilhar_2M"]
         emitir(500)
-        estado = "qH_D"
+        estado = "qCentena_D"
 
-      in ["X", "qM2"]
-        estado = "qT_X1"
+      in ["X", "qMilhar_2M"]
+        estado = "qDezena_1X"
 
-      in ["L", "qM2"]
+      in ["L", "qMilhar_2M"]
         emitir(50)
-        estado = "qT_L"
+        estado = "qDezena_L"
 
-      in ["I", "qM2"]
-        estado = "qU_I1"
+      in ["I", "qMilhar_2M"]
+        estado = "qUnidade_1I"
 
-      in ["V", "qM2"]
+      in ["V", "qMilhar_2M"]
         emitir(5)
-        estado = "qU_V"
+        estado = "qUnidade_V"
 
-      in ["", "qM2"]
+      in ["", "qMilhar_2M"]
         aceitar
         break
 
-      in ["C", "qM3"]
-        estado = "qH_C1"
+      in ["C", "qMilhar_3M"]
+        estado = "qCentena_1C"
 
-      in ["D", "qM3"]
+      in ["D", "qMilhar_3M"]
         emitir(500)
-        estado = "qH_D"
+        estado = "qCentena_D"
 
-      in ["X", "qM3"]
-        estado = "qT_X1"
+      in ["X", "qMilhar_3M"]
+        estado = "qDezena_1X"
 
-      in ["L", "qM3"]
+      in ["L", "qMilhar_3M"]
         emitir(50)
-        estado = "qT_L"
+        estado = "qDezena_L"
 
-      in ["I", "qM3"]
-        estado = "qU_I1"
+      in ["I", "qMilhar_3M"]
+        estado = "qUnidade_1I"
 
-      in ["V", "qM3"]
+      in ["V", "qMilhar_3M"]
         emitir(5)
-        estado = "qU_V"
+        estado = "qUnidade_V"
 
-      in ["", "qM3"]
+      in ["", "qMilhar_3M"]
         aceitar
+        break
+
+      else
+        erro(estado)
         break
       end
 
