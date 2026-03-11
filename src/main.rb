@@ -44,10 +44,8 @@ class ADFRomano
 
     loop do
       case [proximo, estado]
-
       
       # ESTADO INICIAL / CASA DOS MILHARES
-      
       in ["M", "q0"]
         emitir(1000)
         estado = "qM1"
