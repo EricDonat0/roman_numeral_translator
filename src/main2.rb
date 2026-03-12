@@ -41,7 +41,7 @@ class FSTRomano
 
       case [simbolo_atual, estado]
 
-      # -------- INÍCIO --------
+      #  INÍCIO 
       in ["M", "qInicio"] then estado = "qMilhar_M"
       in ["C", "qInicio"] then estado = "qCentena_C"
       in ["D", "qInicio"] then estado = "qCentena_D"
@@ -51,7 +51,7 @@ class FSTRomano
       in ["V", "qInicio"] then estado = "qUnidade_V"
       in ["",  "qInicio"] then estado = "qFinal"
 
-      # -------- MILHARES --------
+      #  MILHARES 
       in ["M", "qMilhar_M"]  then estado = "qMilhar_2M"
       in ["C", "qMilhar_M"]  then emitir("1");   estado = "qCentena_C"
       in ["D", "qMilhar_M"]  then emitir("1");   estado = "qCentena_D"
@@ -78,7 +78,7 @@ class FSTRomano
       in ["V", "qMilhar_3M"] then emitir("300"); estado = "qUnidade_V"
       in ["",  "qMilhar_3M"] then emitir("3");   estado = "qCentena"
 
-      # -------- CENTENAS --------
+      #  CENTENAS 
       in ["C", "qCentena_C"] then estado = "qCentena_2C"
       in ["M", "qCentena_C"] then estado = "qCentena_CM"
       in ["D", "qCentena_C"] then estado = "qCentena_CD"
@@ -140,7 +140,7 @@ class FSTRomano
       in ["V", "qCentena_CM"] then emitir("90"); estado = "qUnidade_V"
       in ["",  "qCentena_CM"] then emitir("9");  estado = "qDezena"
 
-      # -------- DEZENAS --------
+      #  DEZENAS 
       in ["X", "qDezena_X"] then estado = "qDezena_2X"
       in ["L", "qDezena_X"] then estado = "qDezena_XL"
       in ["C", "qDezena_X"] then estado = "qDezena_XC"
@@ -184,7 +184,7 @@ class FSTRomano
       in ["V", "qDezena_XC"] then emitir("9"); estado = "qUnidade_V"
       in ["",  "qDezena_XC"] then emitir("9"); estado = "qUnidade"
 
-      # -------- UNIDADES --------
+      #  UNIDADES 
       in ["I", "qUnidade_I"] then estado = "qUnidade_2I"
       in ["V", "qUnidade_I"] then emitir("4"); estado = "qFinal"
       in ["X", "qUnidade_I"] then emitir("9"); estado = "qFinal"
@@ -206,7 +206,7 @@ class FSTRomano
 
       in ["",  "qUnidade_8V"] then emitir("8"); estado = "qFinal"
 
-      # -------- CASCATA DE ZEROS --------
+      #  CASCATA DE ZEROS 
       in ["", "qCentena"]
         emitir("0")
         estado = "qDezena"
