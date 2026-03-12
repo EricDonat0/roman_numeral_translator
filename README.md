@@ -1,7 +1,9 @@
 # Transdutor Finito Determinístico para Conversão de Números Romanos
 
-## Integrante
-Eric Pulcino
+## Integrantes
+Eric Donato
+Paula Martins
+Matheus Henrique
 
 ## Descrição do projeto
 
