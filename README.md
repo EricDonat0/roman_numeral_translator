@@ -259,14 +259,3 @@ As entradas abaixo devem ser rejeitadas:
 | IIV | estrutura inválida |
 
 ---
-
-# Estrutura do projeto
-
-```text
-roman_numeral_translator/
-├── main.rb
-├── roman_transducer.rb
-├── test_roman_transducer.rb
-└── docs/
-    ├── roman_transducer.mmd
-    └── modelagem.md
