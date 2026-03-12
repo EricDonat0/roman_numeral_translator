@@ -1,8 +1,11 @@
 # Transdutor Finito Determinístico para Conversão de Números Romanos
 
 ## Integrantes
+
 Eric Donato
+
 Paula Martins
+
 Matheus Henrique
 
 ## Descrição do projeto
