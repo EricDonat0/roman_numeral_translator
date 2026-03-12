@@ -1,0 +1,143 @@
+stateDiagram-v2
+    [*] --> q0
+
+    q0 --> qM1: M / ε
+    qM1 --> qM2: M / ε
+    qM2 --> qM3: M / ε
+
+    q0 --> qHC: C / ε
+    q0 --> qHD: D / ε
+    q0 --> qTX: X / ε
+    q0 --> qTL: L / ε
+    q0 --> qOI: I / ε
+    q0 --> qOV: V / ε
+
+    qM1 --> qHC: C / 1000
+    qM1 --> qHD: D / 1000
+    qM1 --> qTX: X / 1000
+    qM1 --> qTL: L / 1000
+    qM1 --> qOI: I / 1000
+    qM1 --> qOV: V / 1000
+    qM1 --> qF: EOF / 1000
+
+    qM2 --> qHC: C / 2000
+    qM2 --> qHD: D / 2000
+    qM2 --> qTX: X / 2000
+    qM2 --> qTL: L / 2000
+    qM2 --> qOI: I / 2000
+    qM2 --> qOV: V / 2000
+    qM2 --> qF: EOF / 2000
+
+    qM3 --> qHC: C / 3000
+    qM3 --> qHD: D / 3000
+    qM3 --> qTX: X / 3000
+    qM3 --> qTL: L / 3000
+    qM3 --> qOI: I / 3000
+    qM3 --> qOV: V / 3000
+    qM3 --> qF: EOF / 3000
+
+    qHC --> qHCC: C / ε
+    qHC --> qF: D / 400
+    qHC --> qF: M / 900
+    qHC --> qTX: X / 100
+    qHC --> qTL: L / 100
+    qHC --> qOI: I / 100
+    qHC --> qOV: V / 100
+    qHC --> qF: EOF / 100
+
+    qHCC --> qHCCC: C / ε
+    qHCC --> qTX: X / 200
+    qHCC --> qTL: L / 200
+    qHCC --> qOI: I / 200
+    qHCC --> qOV: V / 200
+    qHCC --> qF: EOF / 200
+
+    qHCCC --> qTX: X / 300
+    qHCCC --> qTL: L / 300
+    qHCCC --> qOI: I / 300
+    qHCCC --> qOV: V / 300
+    qHCCC --> qF: EOF / 300
+
+    qHD --> qHDC: C / ε
+    qHD --> qTX: X / 500
+    qHD --> qTL: L / 500
+    qHD --> qOI: I / 500
+    qHD --> qOV: V / 500
+    qHD --> qF: EOF / 500
+
+    qHDC --> qHDCC: C / ε
+    qHDC --> qTX: X / 600
+    qHDC --> qTL: L / 600
+    qHDC --> qOI: I / 600
+    qHDC --> qOV: V / 600
+    qHDC --> qF: EOF / 600
+
+    qHDCC --> qHDCCC: C / ε
+    qHDCC --> qTX: X / 700
+    qHDCC --> qTL: L / 700
+    qHDCC --> qOI: I / 700
+    qHDCC --> qOV: V / 700
+    qHDCC --> qF: EOF / 700
+
+    qHDCCC --> qTX: X / 800
+    qHDCCC --> qTL: L / 800
+    qHDCCC --> qOI: I / 800
+    qHDCCC --> qOV: V / 800
+    qHDCCC --> qF: EOF / 800
+
+    qTX --> qTXX: X / ε
+    qTX --> qF: L / 40
+    qTX --> qF: C / 90
+    qTX --> qOI: I / 10
+    qTX --> qOV: V / 10
+    qTX --> qF: EOF / 10
+
+    qTXX --> qTXXX: X / ε
+    qTXX --> qOI: I / 20
+    qTXX --> qOV: V / 20
+    qTXX --> qF: EOF / 20
+
+    qTXXX --> qOI: I / 30
+    qTXXX --> qOV: V / 30
+    qTXXX --> qF: EOF / 30
+
+    qTL --> qTLX: X / ε
+    qTL --> qOI: I / 50
+    qTL --> qOV: V / 50
+    qTL --> qF: EOF / 50
+
+    qTLX --> qTLXX: X / ε
+    qTLX --> qOI: I / 60
+    qTLX --> qOV: V / 60
+    qTLX --> qF: EOF / 60
+
+    qTLXX --> qTLXXX: X / ε
+    qTLXX --> qOI: I / 70
+    qTLXX --> qOV: V / 70
+    qTLXX --> qF: EOF / 70
+
+    qTLXXX --> qOI: I / 80
+    qTLXXX --> qOV: V / 80
+    qTLXXX --> qF: EOF / 80
+
+    qOI --> qOII: I / ε
+    qOI --> qF: V / 4
+    qOI --> qF: X / 9
+    qOI --> qF: EOF / 1
+
+    qOII --> qOIII: I / ε
+    qOII --> qF: EOF / 2
+
+    qOIII --> qF: EOF / 3
+
+    qOV --> qOVI: I / ε
+    qOV --> qF: EOF / 5
+
+    qOVI --> qOVII: I / ε
+    qOVI --> qF: EOF / 6
+
+    qOVII --> qOVIII: I / ε
+    qOVII --> qF: EOF / 7
+
+    qOVIII --> qF: EOF / 8
+    qF --> [*]
