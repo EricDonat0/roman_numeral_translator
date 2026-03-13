@@ -1,143 +1,116 @@
 stateDiagram-v2
-    [*] --> q0
+    direction TB
+    
+    [*] --> qInicio
+    
+    %% INÍCIO E CASCATA DE ZEROS
+    qInicio --> qMilhar_M : M / ε
+    qInicio --> qCentena_C : C / ε
+    qInicio --> qCentena_D : D / ε
+    qInicio --> qDezena_X : X / ε
+    qInicio --> qDezena_L : L / ε
+    qInicio --> qUnidade_I : I / ε
+    qInicio --> qUnidade_V : V / ε
+    
+    qCentena --> qDezena : ε / "0"
+    qDezena --> qUnidade : ε / "0"
+    qUnidade --> qFinal : ε / "0"
 
-    q0 --> qM1: M / ε
-    qM1 --> qM2: M / ε
-    qM2 --> qM3: M / ε
+    %% MILHARES
+    state Milhares {
+        qMilhar_M --> qMilhar_2M : M / ε
+        qMilhar_2M --> qMilhar_3M : M / ε
+        
+        qMilhar_M --> qCentena : ε / "1"
+        qMilhar_2M --> qCentena : ε / "2"
+        qMilhar_3M --> qCentena : ε / "3"
+    }
+    
+    %% TRANSIÇÕES MILHARES -> CENTENAS
+    qMilhar_M --> qCentena_C : C / "1"
+    qMilhar_M --> qCentena_D : D / "1"
+    qMilhar_2M --> qCentena_C : C / "2"
+    qMilhar_2M --> qCentena_D : D / "2"
+    qMilhar_3M --> qCentena_C : C / "3"
+    qMilhar_3M --> qCentena_D : D / "3"
 
-    q0 --> qHC: C / ε
-    q0 --> qHD: D / ε
-    q0 --> qTX: X / ε
-    q0 --> qTL: L / ε
-    q0 --> qOI: I / ε
-    q0 --> qOV: V / ε
+    %% CENTENAS
+    state Centenas {
+        qCentena_C --> qCentena_2C : C / ε
+        qCentena_2C --> qCentena_3C : C / ε
+        qCentena_C --> qCentena_CD : D / ε
+        qCentena_C --> qCentena_CM : M / ε
+        qCentena_D --> qCentena_6D : C / ε
+        qCentena_6D --> qCentena_7D : C / ε
+        qCentena_7D --> qCentena_8D : C / ε
+        
+        qCentena_C --> qDezena : ε / "1"
+        qCentena_2C --> qDezena : ε / "2"
+        qCentena_3C --> qDezena : ε / "3"
+        qCentena_CD --> qDezena : ε / "4"
+        qCentena_D --> qDezena : ε / "5"
+        qCentena_6D --> qDezena : ε / "6"
+        qCentena_7D --> qDezena : ε / "7"
+        qCentena_8D --> qDezena : ε / "8"
+        qCentena_CM --> qDezena : ε / "9"
+    }
 
-    qM1 --> qHC: C / 1000
-    qM1 --> qHD: D / 1000
-    qM1 --> qTX: X / 1000
-    qM1 --> qTL: L / 1000
-    qM1 --> qOI: I / 1000
-    qM1 --> qOV: V / 1000
-    qM1 --> qF: EOF / 1000
+    %% TRANSIÇÕES CENTENAS -> DEZENAS
+    qCentena_C --> qDezena_X : X / "1"
+    qCentena_C --> qDezena_L : L / "1"
+    qCentena_2C --> qDezena_X : X / "2"
+    qCentena_CD --> qDezena_X : X / "4"
+    qCentena_D --> qDezena_X : X / "5"
+    qCentena_CM --> qDezena_X : X / "9"
 
-    qM2 --> qHC: C / 2000
-    qM2 --> qHD: D / 2000
-    qM2 --> qTX: X / 2000
-    qM2 --> qTL: L / 2000
-    qM2 --> qOI: I / 2000
-    qM2 --> qOV: V / 2000
-    qM2 --> qF: EOF / 2000
+    %% DEZENAS
+    state Dezenas {
+        qDezena_X --> qDezena_2X : X / ε
+        qDezena_2X --> qDezena_3X : X / ε
+        qDezena_X --> qDezena_XL : L / ε
+        qDezena_X --> qDezena_XC : C / ε
+        qDezena_L --> qDezena_6L : X / ε
+        qDezena_6L --> qDezena_7L : X / ε
+        qDezena_7L --> qDezena_8L : X / ε
 
-    qM3 --> qHC: C / 3000
-    qM3 --> qHD: D / 3000
-    qM3 --> qTX: X / 3000
-    qM3 --> qTL: L / 3000
-    qM3 --> qOI: I / 3000
-    qM3 --> qOV: V / 3000
-    qM3 --> qF: EOF / 3000
+        qDezena_X --> qUnidade : ε / "1"
+        qDezena_2X --> qUnidade : ε / "2"
+        qDezena_3X --> qUnidade : ε / "3"
+        qDezena_XL --> qUnidade : ε / "4"
+        qDezena_L --> qUnidade : ε / "5"
+        qDezena_6L --> qUnidade : ε / "6"
+        qDezena_7L --> qUnidade : ε / "7"
+        qDezena_8L --> qUnidade : ε / "8"
+        qDezena_XC --> qUnidade : ε / "9"
+    }
 
-    qHC --> qHCC: C / ε
-    qHC --> qF: D / 400
-    qHC --> qF: M / 900
-    qHC --> qTX: X / 100
-    qHC --> qTL: L / 100
-    qHC --> qOI: I / 100
-    qHC --> qOV: V / 100
-    qHC --> qF: EOF / 100
+    %% TRANSIÇÕES DEZENAS -> UNIDADES
+    qDezena_X --> qUnidade_I : I / "1"
+    qDezena_X --> qUnidade_V : V / "1"
+    qDezena_2X --> qUnidade_I : I / "2"
+    qDezena_XL --> qUnidade_I : I / "4"
+    qDezena_L --> qUnidade_I : I / "5"
+    qDezena_XC --> qUnidade_I : I / "9"
 
-    qHCC --> qHCCC: C / ε
-    qHCC --> qTX: X / 200
-    qHCC --> qTL: L / 200
-    qHCC --> qOI: I / 200
-    qHCC --> qOV: V / 200
-    qHCC --> qF: EOF / 200
+    %% UNIDADES
+    state Unidades {
+        qUnidade_I --> qUnidade_2I : I / ε
+        qUnidade_2I --> qUnidade_3I : I / ε
+        
+        qUnidade_V --> qUnidade_6V : I / ε
+        qUnidade_6V --> qUnidade_7V : I / ε
+        qUnidade_7V --> qUnidade_8V : I / ε
+        
+        qUnidade_I --> qFinal : V / "4"
+        qUnidade_I --> qFinal : X / "9"
 
-    qHCCC --> qTX: X / 300
-    qHCCC --> qTL: L / 300
-    qHCCC --> qOI: I / 300
-    qHCCC --> qOV: V / 300
-    qHCCC --> qF: EOF / 300
-
-    qHD --> qHDC: C / ε
-    qHD --> qTX: X / 500
-    qHD --> qTL: L / 500
-    qHD --> qOI: I / 500
-    qHD --> qOV: V / 500
-    qHD --> qF: EOF / 500
-
-    qHDC --> qHDCC: C / ε
-    qHDC --> qTX: X / 600
-    qHDC --> qTL: L / 600
-    qHDC --> qOI: I / 600
-    qHDC --> qOV: V / 600
-    qHDC --> qF: EOF / 600
-
-    qHDCC --> qHDCCC: C / ε
-    qHDCC --> qTX: X / 700
-    qHDCC --> qTL: L / 700
-    qHDCC --> qOI: I / 700
-    qHDCC --> qOV: V / 700
-    qHDCC --> qF: EOF / 700
-
-    qHDCCC --> qTX: X / 800
-    qHDCCC --> qTL: L / 800
-    qHDCCC --> qOI: I / 800
-    qHDCCC --> qOV: V / 800
-    qHDCCC --> qF: EOF / 800
-
-    qTX --> qTXX: X / ε
-    qTX --> qF: L / 40
-    qTX --> qF: C / 90
-    qTX --> qOI: I / 10
-    qTX --> qOV: V / 10
-    qTX --> qF: EOF / 10
-
-    qTXX --> qTXXX: X / ε
-    qTXX --> qOI: I / 20
-    qTXX --> qOV: V / 20
-    qTXX --> qF: EOF / 20
-
-    qTXXX --> qOI: I / 30
-    qTXXX --> qOV: V / 30
-    qTXXX --> qF: EOF / 30
-
-    qTL --> qTLX: X / ε
-    qTL --> qOI: I / 50
-    qTL --> qOV: V / 50
-    qTL --> qF: EOF / 50
-
-    qTLX --> qTLXX: X / ε
-    qTLX --> qOI: I / 60
-    qTLX --> qOV: V / 60
-    qTLX --> qF: EOF / 60
-
-    qTLXX --> qTLXXX: X / ε
-    qTLXX --> qOI: I / 70
-    qTLXX --> qOV: V / 70
-    qTLXX --> qF: EOF / 70
-
-    qTLXXX --> qOI: I / 80
-    qTLXXX --> qOV: V / 80
-    qTLXXX --> qF: EOF / 80
-
-    qOI --> qOII: I / ε
-    qOI --> qF: V / 4
-    qOI --> qF: X / 9
-    qOI --> qF: EOF / 1
-
-    qOII --> qOIII: I / ε
-    qOII --> qF: EOF / 2
-
-    qOIII --> qF: EOF / 3
-
-    qOV --> qOVI: I / ε
-    qOV --> qF: EOF / 5
-
-    qOVI --> qOVII: I / ε
-    qOVI --> qF: EOF / 6
-
-    qOVII --> qOVIII: I / ε
-    qOVII --> qF: EOF / 7
-
-    qOVIII --> qF: EOF / 8
-    qF --> [*]
+        qUnidade_I --> qFinal : ε / "1"
+        qUnidade_2I --> qFinal : ε / "2"
+        qUnidade_3I --> qFinal : ε / "3"
+        qUnidade_V --> qFinal : ε / "5"
+        qUnidade_6V --> qFinal : ε / "6"
+        qUnidade_7V --> qFinal : ε / "7"
+        qUnidade_8V --> qFinal : ε / "8"
+    }
+    
+    qFinal --> [*]

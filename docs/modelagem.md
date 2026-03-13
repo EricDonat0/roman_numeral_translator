@@ -1,210 +1,159 @@
-# Modelagem do Transdutor Finito Determinístico
+# Modelagem AFD - Transdutor 3.0
 
-## Objetivo
+Este documento detalha a modelagem matemática e lógica do Autómato Finito Determinístico (AFD) com saída (Transdutor) desenvolvido para a conversão de numerais romanos para decimais.
 
-Este projeto implementa um **Transdutor Finito Determinístico (TFD)** capaz de reconhecer números romanos válidos e convertê-los para sua representação decimal.
+## 1. Definição Formal
 
-O alfabeto reconhecido é:
+O modelo implementado é definido formalmente por uma sêxtupla $T = (Q, \Sigma, \Gamma, \delta, \lambda, q_0)$, onde:
 
-**Σ = { I, V, X, L, C, D, M }**
+* **$Q$ (Conjunto finito de estados):** `{qInicio, qMilhar_M, qMilhar_2M, qMilhar_3M, qCentena_C, qCentena_2C, qCentena_3C, qCentena_CD, qCentena_D, qCentena_6D, qCentena_7D, qCentena_8D, qCentena_CM, qCentena, qDezena_X, qDezena_2X, qDezena_3X, qDezena_XL, qDezena_L, qDezena_6L, qDezena_7L, qDezena_8L, qDezena_XC, qDezena, qUnidade_I, qUnidade_2I, qUnidade_3I, qUnidade_V, qUnidade_6V, qUnidade_7V, qUnidade_8V, qUnidade, qFinal}`
+* **$\Sigma$ (Alfabeto de entrada):** `{I, V, X, L, C, D, M, ε}` *(onde ε representa a string vazia ou fim da cadeia)*
+* **$\Gamma$ (Alfabeto de saída):** `{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}`
+* **$\delta$ (Função de transição de estados):** $Q \times \Sigma \rightarrow Q$
+* **$\lambda$ (Função de saída):** $Q \times \Sigma \rightarrow \Gamma^*$
+* **$q_0$ (Estado inicial):** `qInicio`
 
-Por simplificação, o transdutor reconhece apenas números romanos no intervalo de **1 até 3999**.
+## 2. Tipo de Transdutor: Máquina de Mealy
 
----
+A arquitetura escolhida para a resolução deste problema é a **Máquina de Mealy**. 
 
-## Tipo de transdutor utilizado
+A justificação para esta escolha reside na regra fundamental da numeração romana: o valor posicional de um símbolo pode ser aditivo ou subtrativo dependendo do símbolo que o sucede. Numa Máquina de Moore, a saída está associada unicamente ao estado atual. Contudo, no nosso transdutor, o simples facto de estarmos no estado `qCentena_C` (após ler um "C") não é suficiente para determinar a saída. 
 
-Foi utilizado um **Transdutor de Mealy**.
+Se a transição seguinte for a leitura de um "X", sabemos que o "C" valia efetivamente 100, emitindo a saída `1`. Se a transição seguinte for a leitura de um "M", o "C" funcionou como subtrator (CM = 900), emitindo a saída `9`. Como **a saída depende crucialmente da transição (estado atual + símbolo de entrada)**, o modelo de Mealy adequa-se de forma perfeita.
 
-### Justificativa
+## 3. Comportamento das Transições
 
-A escolha do modelo de Mealy foi feita porque a saída é emitida durante as **transições** entre estados.
+### Transições sem alfabeto de saída
+Representam momentos em que o autómato avança na fita, mas ainda não tem informação suficiente para determinar o dígito decimal, alterando apenas o seu estado interno de conhecimento.
+* **Exemplo 1:** Estando em `qInicio`, ao ler `M`, transita para `qMilhar_M`. Nenhuma saída é emitida.
+* **Exemplo 2:** Estando em `qCentena_C`, ao ler `D`, transita para `qCentena_CD`. Nenhuma saída é emitida (preparação para emitir o "4" na próxima etapa).
 
-No problema de números romanos, o valor produzido depende do símbolo lido e também do contexto em que ele aparece.
-
-Exemplos:
-
-- `I` seguido de `V` gera saída `4`
-- `I` seguido de `X` gera saída `9`
-- `C` seguido de `M` gera saída `900`
-
-Portanto, a saída não depende apenas do estado atual, mas da **transição realizada**, o que caracteriza uma máquina de **Mealy**.
-
----
-
-## Definição formal
-
-O transdutor pode ser representado por:
-
-**T = (Q, Σ, Γ, δ, λ, q0, F)**
-
-Onde:
-
-- **Q** é o conjunto finito de estados
-- **Σ** é o alfabeto de entrada
-- **Γ** é o alfabeto de saída
-- **δ** é a função de transição
-- **λ** é a função de saída
-- **q0** é o estado inicial
-- **F** é o conjunto de estados finais
+### Transições com emissão de símbolos
+Ocorrem quando a leitura de um novo símbolo confirma o bloco de grandeza anterior, ou quando ocorre a terminação da fita.
+* **Exemplo 1:** Estando em `qCentena_C`, ao ler `X` (iniciando as dezenas), transita para `qDezena_X` e emite `1` no alfabeto de saída (confirmando a centena "1").
+* **Exemplo 2:** Estando em `qCentena`, ao ler `ε` (fim de cadeia), transita para `qDezena` e emite `0` (Cascata de Zeros, preenchendo casas decimais inexistentes à direita).
 
 ---
 
-## Alfabeto de entrada
+## 4. Diagrama de Estados (Mermaid)
 
-O alfabeto de entrada é formado pelos símbolos romanos:
+Abaixo encontra-se a representação gráfica do nosso Transdutor de Mealy, mapeando as validações de grande parte da cadeia (Milhares, Centenas, Dezenas, Unidades e Cascata de Zeros). As transições seguem o formato `Entrada / Saída` (onde `ε` significa ausência de entrada/saída).
 
-**Σ = { I, V, X, L, C, D, M }**
+```mermaid
+stateDiagram-v2
+    direction TB
+    
+    [*] --> qInicio
+    
+    %% INÍCIO E CASCATA DE ZEROS
+    qInicio --> qMilhar_M : M / ε
+    qInicio --> qCentena_C : C / ε
+    qInicio --> qCentena_D : D / ε
+    qInicio --> qDezena_X : X / ε
+    qInicio --> qDezena_L : L / ε
+    qInicio --> qUnidade_I : I / ε
+    qInicio --> qUnidade_V : V / ε
+    
+    qCentena --> qDezena : ε / "0"
+    qDezena --> qUnidade : ε / "0"
+    qUnidade --> qFinal : ε / "0"
 
----
+    %% MILHARES
+    state Milhares {
+        qMilhar_M --> qMilhar_2M : M / ε
+        qMilhar_2M --> qMilhar_3M : M / ε
+        
+        qMilhar_M --> qCentena : ε / "1"
+        qMilhar_2M --> qCentena : ε / "2"
+        qMilhar_3M --> qCentena : ε / "3"
+    }
+    
+    %% TRANSIÇÕES MILHARES -> CENTENAS
+    qMilhar_M --> qCentena_C : C / "1"
+    qMilhar_M --> qCentena_D : D / "1"
+    qMilhar_2M --> qCentena_C : C / "2"
+    qMilhar_2M --> qCentena_D : D / "2"
+    qMilhar_3M --> qCentena_C : C / "3"
+    qMilhar_3M --> qCentena_D : D / "3"
 
-## Alfabeto de saída
+    %% CENTENAS
+    state Centenas {
+        qCentena_C --> qCentena_2C : C / ε
+        qCentena_2C --> qCentena_3C : C / ε
+        qCentena_C --> qCentena_CD : D / ε
+        qCentena_C --> qCentena_CM : M / ε
+        qCentena_D --> qCentena_6D : C / ε
+        qCentena_6D --> qCentena_7D : C / ε
+        qCentena_7D --> qCentena_8D : C / ε
+        
+        qCentena_C --> qDezena : ε / "1"
+        qCentena_2C --> qDezena : ε / "2"
+        qCentena_3C --> qDezena : ε / "3"
+        qCentena_CD --> qDezena : ε / "4"
+        qCentena_D --> qDezena : ε / "5"
+        qCentena_6D --> qDezena : ε / "6"
+        qCentena_7D --> qDezena : ε / "7"
+        qCentena_8D --> qDezena : ε / "8"
+        qCentena_CM --> qDezena : ε / "9"
+    }
 
-O alfabeto de saída é composto pelos valores emitidos ao longo do processamento:
+    %% TRANSIÇÕES CENTENAS -> DEZENAS
+    qCentena_C --> qDezena_X : X / "1"
+    qCentena_C --> qDezena_L : L / "1"
+    qCentena_2C --> qDezena_X : X / "2"
+    qCentena_CD --> qDezena_X : X / "4"
+    qCentena_D --> qDezena_X : X / "5"
+    qCentena_CM --> qDezena_X : X / "9"
 
-**Γ = { ε, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 2000, 3000 }**
+    %% DEZENAS
+    state Dezenas {
+        qDezena_X --> qDezena_2X : X / ε
+        qDezena_2X --> qDezena_3X : X / ε
+        qDezena_X --> qDezena_XL : L / ε
+        qDezena_X --> qDezena_XC : C / ε
+        qDezena_L --> qDezena_6L : X / ε
+        qDezena_6L --> qDezena_7L : X / ε
+        qDezena_7L --> qDezena_8L : X / ε
 
-Onde:
+        qDezena_X --> qUnidade : ε / "1"
+        qDezena_2X --> qUnidade : ε / "2"
+        qDezena_3X --> qUnidade : ε / "3"
+        qDezena_XL --> qUnidade : ε / "4"
+        qDezena_L --> qUnidade : ε / "5"
+        qDezena_6L --> qUnidade : ε / "6"
+        qDezena_7L --> qUnidade : ε / "7"
+        qDezena_8L --> qUnidade : ε / "8"
+        qDezena_XC --> qUnidade : ε / "9"
+    }
 
-- `ε` representa ausência de saída na transição
-- os demais valores representam a saída decimal emitida pela aresta
+    %% TRANSIÇÕES DEZENAS -> UNIDADES
+    qDezena_X --> qUnidade_I : I / "1"
+    qDezena_X --> qUnidade_V : V / "1"
+    qDezena_2X --> qUnidade_I : I / "2"
+    qDezena_XL --> qUnidade_I : I / "4"
+    qDezena_L --> qUnidade_I : I / "5"
+    qDezena_XC --> qUnidade_I : I / "9"
 
----
+    %% UNIDADES
+    state Unidades {
+        qUnidade_I --> qUnidade_2I : I / ε
+        qUnidade_2I --> qUnidade_3I : I / ε
+        
+        qUnidade_V --> qUnidade_6V : I / ε
+        qUnidade_6V --> qUnidade_7V : I / ε
+        qUnidade_7V --> qUnidade_8V : I / ε
+        
+        qUnidade_I --> qFinal : V / "4"
+        qUnidade_I --> qFinal : X / "9"
 
-## Estado inicial
-
-**q0**
-
----
-
-## Estados finais
-
-**F = { qF }**
-
-O estado `qF` representa o encerramento correto da leitura da cadeia.
-
----
-
-## Conjunto de estados
-
-Os estados foram organizados em blocos de acordo com a estrutura canônica dos números romanos.
-
-### Estados de milhares
-- `q0`
-- `qM1`
-- `qM2`
-- `qM3`
-
-### Estados de centenas
-- `qHC`
-- `qHCC`
-- `qHCCC`
-- `qHD`
-- `qHDC`
-- `qHDCC`
-- `qHDCCC`
-
-### Estados de dezenas
-- `qTX`
-- `qTXX`
-- `qTXXX`
-- `qTL`
-- `qTLX`
-- `qTLXX`
-- `qTLXXX`
-
-### Estados de unidades
-- `qOI`
-- `qOII`
-- `qOIII`
-- `qOV`
-- `qOVI`
-- `qOVII`
-- `qOVIII`
-
-### Estado final
-- `qF`
-
----
-
-## Estratégia de modelagem
-
-A modelagem foi construída com base na forma canônica dos números romanos até 3999:
-
-- milhares: `"" | M | MM | MMM`
-- centenas: `"" | C | CC | CCC | CD | D | DC | DCC | DCCC | CM`
-- dezenas: `"" | X | XX | XXX | XL | L | LX | LXX | LXXX | XC`
-- unidades: `"" | I | II | III | IV | V | VI | VII | VIII | IX`
-
-Essa separação permite que a máquina:
-
-- reconheça apenas sequências válidas
-- rejeite padrões incorretos
-- produza o valor decimal durante a leitura
-
----
-
-## Exemplos de transições sem saída
-
-Algumas transições servem apenas para avançar na leitura da estrutura, sem emitir valor:
-
-- `δ(q0, M) = qM1`, `λ(q0, M) = ε`
-- `δ(qM1, M) = qM2`, `λ(qM1, M) = ε`
-- `δ(qHC, C) = qHCC`, `λ(qHC, C) = ε`
-- `δ(qTX, X) = qTXX`, `λ(qTX, X) = ε`
-- `δ(qOI, I) = qOII`, `λ(qOI, I) = ε`
-
----
-
-## Exemplos de transições com saída
-
-Algumas transições emitem parte do valor decimal:
-
-- `δ(qOI, V) = qF`, `λ(qOI, V) = 4`
-- `δ(qOI, X) = qF`, `λ(qOI, X) = 9`
-- `δ(qHC, M) = qF`, `λ(qHC, M) = 900`
-- `δ(qTX, L) = qF`, `λ(qTX, L) = 40`
-- `δ(qM2, X) = qTX`, `λ(qM2, X) = 2000`
-
----
-
-## Validação de entradas
-
-A validação é feita pelo próprio transdutor, por meio das transições permitidas.
-
-Se um símbolo for lido em um estado onde não existe transição válida, a entrada é rejeitada.
-
-Exemplos de entradas inválidas rejeitadas:
-
-- `IC`
-- `VX`
-- `IL`
-- `XM`
-- `IIII`
-- `VV`
-
----
-
-## Exemplos de entradas válidas
-
-| Romano | Decimal |
-| --- | ---: |
-| III | 3 |
-| IV | 4 |
-| IX | 9 |
-| XIV | 14 |
-| XXIX | 29 |
-| XLII | 42 |
-| LXXXVIII | 88 |
-| CXCIV | 194 |
-| MCMXC | 1990 |
-| MMXXIV | 2024 |
-| MMMCMXCIX | 3999 |
-
----
-
-## Conclusão
-
-O transdutor modelado reconhece números romanos válidos até 3999 e realiza a conversão para decimal por meio de transições de estado com emissão de saída.
-
-A solução segue a proposta de um **Autômato Finito Determinístico com saída**, utilizando o modelo de **Mealy**, já que a saída depende diretamente da transição executada durante a leitura da cadeia.
+        qUnidade_I --> qFinal : ε / "1"
+        qUnidade_2I --> qFinal : ε / "2"
+        qUnidade_3I --> qFinal : ε / "3"
+        qUnidade_V --> qFinal : ε / "5"
+        qUnidade_6V --> qFinal : ε / "6"
+        qUnidade_7V --> qFinal : ε / "7"
+        qUnidade_8V --> qFinal : ε / "8"
+    }
+    
+    qFinal --> [*]
+```
