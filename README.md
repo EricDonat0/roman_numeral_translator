@@ -1,4 +1,4 @@
-# (EP): Transdutor Finito Determinístico - Numerais Romanos
+# (EP 1 - LFA): Transdutor Finito Determinístico - Numerais Romanos
 
 **Instituição:** Centro Universitário Senac
 
