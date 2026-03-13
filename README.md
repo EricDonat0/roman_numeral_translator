@@ -1,4 +1,4 @@
-# Projeto Integrador (PI): Transdutor Finito Determinístico - Numerais Romanos
+# (EP): Transdutor Finito Determinístico - Numerais Romanos
 
 **Instituição:** Centro Universitário Senac
 
