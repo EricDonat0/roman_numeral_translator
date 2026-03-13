@@ -1,7 +1,9 @@
 # Projeto Integrador (PI): Transdutor Finito Determinístico - Numerais Romanos
 
 **Instituição:** Centro Universitário Senac
+
 **Autores:** Eric Donato, Matheus Henrique, Paula Martins
+
 **Disciplina:** Linguagens Formais e Autômatos
 
 Este projeto implementa um Transdutor Finito Determinístico capaz de reconhecer numerais romanos (de I a MMMCMXCIX) e convertê-los para o sistema decimal indo-arábico. A conversão é feita exclusivamente através de transições de estado, sem o uso de variáveis acumuladoras ou bibliotecas de máquina de estado, conforme as exigências da disciplina.
